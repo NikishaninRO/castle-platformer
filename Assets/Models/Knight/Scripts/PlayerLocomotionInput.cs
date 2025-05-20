@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 namespace Knight
 {
-
     [DefaultExecutionOrder(-2)]
     public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
     {

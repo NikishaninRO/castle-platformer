@@ -5,26 +5,39 @@ namespace Knight
     [DefaultExecutionOrder(-1)]
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] CharacterController _characterController;
-        [SerializeField] GameObject _followPoint;
-
+        [SerializeField] private CharacterController _characterController;
+        [SerializeField] private GameObject _followPoint;
         public float RunAcceleration = 0.25f;
         public float MaxRunSpeed = 4f;
         public float Drag = 0.1f;
+        public float MovingTreshold = 0.01f;
         public float LookSenseH = 0.1f;
         public float LookSenseV = 0.1f;
-
         private float LookLimitV = 45f;
         private PlayerLocomotionInput _playerLocomotionInput;
+        private PlayerState _playerState;
+
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
         private void Start()
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            _playerState = GetComponent<PlayerState>();
         }
 
         private void Update()
+        {
+            HandleHorizontalMovement();
+            UpdatetState();
+        }
+
+        private void LateUpdate()
+        {
+            HandleRotation();
+        }
+
+        private void HandleHorizontalMovement()
         {
             Vector3 directionForwardXZ = new Vector3(_characterController.transform.forward.x, 0f, _characterController.transform.forward.z).normalized;
             Vector3 directionRightXZ = new Vector3(_characterController.transform.right.x, 0f, _characterController.transform.right.z).normalized;
@@ -37,13 +50,19 @@ namespace Knight
             _characterController.Move(newVelocity * Time.deltaTime);
         }
 
-        private void LateUpdate()
+        private void HandleRotation()
         {
             _cameraRotation.x += LookSenseH * _playerLocomotionInput.LookInput.x;
             _cameraRotation.y = Mathf.Clamp(_cameraRotation.y + LookSenseV * _playerLocomotionInput.LookInput.y, -LookLimitV, LookLimitV);
             _followPoint.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
             _playerTargetRotation.x += transform.eulerAngles.x + LookSenseH * _playerLocomotionInput.LookInput.x;
             transform.rotation = Quaternion.Euler(0f, _playerTargetRotation.x, 0f);
+        }
+
+        private void UpdatetState()
+        {
+            bool isZeroMovementInpput = _playerLocomotionInput.MovementInput == Vector2.zero;
+            _playerState.SetCurrentState(!isZeroMovementInpput ? MovementState.Move : MovementState.Idle);
         }
     }
 }
