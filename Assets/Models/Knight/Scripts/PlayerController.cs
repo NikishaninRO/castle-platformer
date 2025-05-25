@@ -7,10 +7,14 @@ namespace Knight
     {
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private GameObject _followPoint;
-        public float RunAcceleration = 0.25f;
+        [Header("Movement")]
+        public float RunAcceleration = 30f;
         public float MaxRunSpeed = 4f;
         public float Drag = 0.1f;
-        public float MovingTreshold = 0.01f;
+        [Header("Sprint")]
+        public float SprintAcceleration = 40f;
+        public float MaxSprintSpeed = 8f;
+        [Header("Look")]
         public float LookSenseH = 0.1f;
         public float LookSenseV = 0.1f;
         private float LookLimitV = 45f;
@@ -39,14 +43,17 @@ namespace Knight
 
         private void HandleHorizontalMovement()
         {
+            bool isSprinting = _playerState.CurrentState == MovementState.Sprinting;
+            float currentAcceleration = isSprinting ? SprintAcceleration : RunAcceleration;
+            float currentMaxSpeed = isSprinting ? MaxSprintSpeed : MaxRunSpeed;
             Vector3 directionForwardXZ = new Vector3(_characterController.transform.forward.x, 0f, _characterController.transform.forward.z).normalized;
             Vector3 directionRightXZ = new Vector3(_characterController.transform.right.x, 0f, _characterController.transform.right.z).normalized;
             Vector3 movementDirection = directionRightXZ * _playerLocomotionInput.MovementInput.x + directionForwardXZ * _playerLocomotionInput.MovementInput.y;
-            Vector3 movementDelta = movementDirection * RunAcceleration * Time.deltaTime;
+            Vector3 movementDelta = movementDirection * currentAcceleration * Time.deltaTime;
             Vector3 newVelocity = _characterController.velocity + movementDelta;
             Vector3 currentDrag = newVelocity.normalized * Drag * Time.deltaTime;
             newVelocity = newVelocity.magnitude > Drag * Time.deltaTime ? newVelocity - currentDrag : Vector3.zero;
-            newVelocity = Vector3.ClampMagnitude(newVelocity, MaxRunSpeed);
+            newVelocity = Vector3.ClampMagnitude(newVelocity, currentMaxSpeed);
             _characterController.Move(newVelocity * Time.deltaTime);
         }
 
@@ -61,8 +68,19 @@ namespace Knight
 
         private void UpdatetState()
         {
-            bool isZeroMovementInpput = _playerLocomotionInput.MovementInput == Vector2.zero;
-            _playerState.SetCurrentState(!isZeroMovementInpput ? MovementState.Move : MovementState.Idle);
+            bool isZeroMovementInput = _playerLocomotionInput.MovementInput == Vector2.zero;
+            bool isForwardMovement = _playerLocomotionInput.MovementInput.y == 1 && _playerLocomotionInput.MovementInput.x == 0;
+            bool isSprinting = _playerLocomotionInput.SprintToggledOn && !isZeroMovementInput && isForwardMovement;
+            MovementState newState = MovementState.Idle;
+            if (!isZeroMovementInput)
+            {
+                newState = MovementState.Moving;
+            }
+            if (isSprinting)
+            {
+                newState = MovementState.Sprinting;
+            }
+            _playerState.SetCurrentState(newState);
         }
     }
 }

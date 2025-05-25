@@ -15,6 +15,7 @@ namespace Knight
     public enum MovementState
     {
         Idle = 0,
-        Move = 1
+        Moving = 1,
+        Sprinting = 2,
     }
 }

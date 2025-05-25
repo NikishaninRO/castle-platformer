@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 900073cf55db63e43bc5a4044834a86d
+guid: 6b545f68d8c121d49addfdcee40657b4
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -491,7 +491,8 @@ ModelImporter:
     - name: mixamorig:LeftHand
       parentName: mixamorig:LeftForeArm
       position: {x: -0.0000018061429, y: 0.31834742, z: -2.2032992e-10}
-      rotation: {x: 0.000000014901158, y: -0.000000038269707, z: 0.0000013723302, w: 1}
+      rotation: {x: 0.000000014901158, y: -0.000000038269707, z: 0.0000013723302,
+        w: 1}
       scale: {x: 1.0000001, y: 1.0000006, z: 1.0000007}
     - name: mixamorig:LeftHandThumb1
       parentName: mixamorig:LeftHand
@@ -561,7 +562,8 @@ ModelImporter:
     - name: mixamorig:RightHandThumb2
       parentName: mixamorig:RightHandThumb1
       position: {x: 3.375078e-16, y: 0.05770444, z: -2.842171e-16}
-      rotation: {x: 0.000000029802319, y: 0.00000001862645, z: -0.00000009592621, w: 1}
+      rotation: {x: 0.000000029802319, y: 0.00000001862645, z: -0.00000009592621,
+        w: 1}
       scale: {x: 1.0000001, y: 1.0000004, z: 1.0000002}
     - name: mixamorig:RightHandThumb3
       parentName: mixamorig:RightHandThumb2
@@ -581,7 +583,8 @@ ModelImporter:
     - name: mixamorig:RightHandIndex2
       parentName: mixamorig:RightHandIndex1
       position: {x: -4.440892e-18, y: 0.05741798, z: 1.1368684e-15}
-      rotation: {x: 0.000000029569485, y: -0.000000022728942, z: -0.000000097790654, w: 1}
+      rotation: {x: 0.000000029569485, y: -0.000000022728942, z: -0.000000097790654,
+        w: 1}
       scale: {x: 1, y: 0.9999998, z: 0.99999994}
     - name: mixamorig:RightHandIndex3
       parentName: mixamorig:RightHandIndex2
