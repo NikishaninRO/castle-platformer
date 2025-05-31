@@ -10,6 +10,11 @@ namespace Knight
         {
             CurrentState = newState;
         }
+
+        public bool IsGroundedState()
+        {
+            return CurrentState == MovementState.Idle || CurrentState == MovementState.Moving || CurrentState == MovementState.Sprinting;
+        }
     }
 
     public enum MovementState
@@ -17,5 +22,7 @@ namespace Knight
         Idle = 0,
         Moving = 1,
         Sprinting = 2,
+        Jumping = 3,
+        Falling = 4,
     }
 }

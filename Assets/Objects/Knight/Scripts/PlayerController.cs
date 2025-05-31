@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Knight
 {
@@ -14,6 +16,11 @@ namespace Knight
         [Header("Sprint")]
         public float SprintAcceleration = 40f;
         public float MaxSprintSpeed = 8f;
+        [Header("Jump")]
+        public float JumpHeight = 3f;
+        public float Gravity = 25f;
+        private float _verticalVelocity = 0f;
+
         [Header("Look")]
         public float LookSenseH = 0.1f;
         public float LookSenseV = 0.1f;
@@ -32,6 +39,7 @@ namespace Knight
 
         private void Update()
         {
+            HandleVerticalMovement();
             HandleHorizontalMovement();
             UpdatetState();
         }
@@ -54,7 +62,22 @@ namespace Knight
             Vector3 currentDrag = newVelocity.normalized * Drag * Time.deltaTime;
             newVelocity = newVelocity.magnitude > Drag * Time.deltaTime ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(newVelocity, currentMaxSpeed);
+            newVelocity.y += _verticalVelocity;
             _characterController.Move(newVelocity * Time.deltaTime);
+        }
+
+        private void HandleVerticalMovement()
+        {
+            bool isGrounded = _playerState.IsGroundedState();
+            if (isGrounded && _verticalVelocity < 0)
+            {
+                _verticalVelocity = 0f;
+            }
+            _verticalVelocity -= Gravity * Time.deltaTime;
+            if (isGrounded && _playerLocomotionInput.JumpPressed)
+            {
+                _verticalVelocity += Mathf.Sqrt(JumpHeight * Gravity);
+            }
         }
 
         private void HandleRotation()
@@ -71,6 +94,9 @@ namespace Knight
             bool isZeroMovementInput = _playerLocomotionInput.MovementInput == Vector2.zero;
             bool isForwardMovement = _playerLocomotionInput.MovementInput.y == 1 && _playerLocomotionInput.MovementInput.x == 0;
             bool isSprinting = _playerLocomotionInput.SprintToggledOn && !isZeroMovementInput && isForwardMovement;
+            bool isMoveUp = _characterController.velocity.y > 0;
+            bool isMoveDown = _characterController.velocity.y <= 0;
+            bool isGrounded = IsGrounded();
             MovementState newState = MovementState.Idle;
             if (!isZeroMovementInput)
             {
@@ -80,7 +106,20 @@ namespace Knight
             {
                 newState = MovementState.Sprinting;
             }
+            if (!isGrounded && isMoveUp)
+            {
+                newState = MovementState.Jumping;
+            }
+            if (!isGrounded && isMoveDown)
+            {
+                newState = MovementState.Falling;
+            }
             _playerState.SetCurrentState(newState);
+        }
+
+        private bool IsGrounded()
+        {
+            return _characterController.isGrounded;
         }
     }
 }

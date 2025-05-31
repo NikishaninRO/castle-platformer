@@ -9,6 +9,10 @@ namespace Knight
         public static int _inputXHash = Animator.StringToHash("InputX");
         public static int _inputYHash = Animator.StringToHash("InputY");
         public static int _isSprintingHash = Animator.StringToHash("IsSprinting");
+        public static int _isGroundedgHash = Animator.StringToHash("IsGrounded");
+        public static int _isJumpingHash = Animator.StringToHash("IsJumping");
+        public static int _isFallingHash = Animator.StringToHash("IsFalling");
+
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
         private Vector3 _currentBlendInput = Vector3.zero;
@@ -22,7 +26,10 @@ namespace Knight
         private void Update()
         {
             SetMovementParams();
-            SetSprintingParams();
+            SetSprintingParam();
+            SetGroundedParam();
+            SetJumpingParam();
+            SetFallingParam();
         }
 
         private void SetMovementParams()
@@ -33,10 +40,28 @@ namespace Knight
             _animator.SetFloat(_inputYHash, _currentBlendInput.y);
         }
 
-        private void SetSprintingParams()
+        private void SetSprintingParam()
         {
             bool isSprinting = _playerState.CurrentState == MovementState.Sprinting;
             _animator.SetBool(_isSprintingHash, isSprinting);
+        }
+
+        private void SetGroundedParam()
+        {
+            bool isGrounded = _playerState.IsGroundedState();
+            _animator.SetBool(_isGroundedgHash, isGrounded);
+        }
+
+        private void SetJumpingParam()
+        {
+            bool isJumping = _playerState.CurrentState == MovementState.Jumping;
+            _animator.SetBool(_isJumpingHash, isJumping);
+        }
+
+        private void SetFallingParam()
+        {
+            bool isFalling = _playerState.CurrentState == MovementState.Falling;
+            _animator.SetBool(_isFallingHash, isFalling);
         }
     }
 }
