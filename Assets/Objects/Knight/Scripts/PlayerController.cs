@@ -17,7 +17,7 @@ namespace Knight
         public float SprintAcceleration = 40f;
         public float MaxSprintSpeed = 8f;
         [Header("Jump")]
-        public float JumpHeight = 3f;
+        public float JumpHeight = 1f;
         public float Gravity = 25f;
         private float _verticalVelocity = 0f;
 

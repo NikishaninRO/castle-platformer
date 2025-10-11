@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "castle_platformer.sln"
+    "dotnet.defaultSolution": "castle-platformer.sln"
 }
